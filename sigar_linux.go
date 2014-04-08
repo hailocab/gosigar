@@ -212,14 +212,14 @@ func (self *ProcState) Get(pid int) error {
 func (self *ProcIO) Get(pid int) error {
 	filename := procFileName(pid, "io")
 
-	if err := readFile(filename, func(line string) bool {
+	err := readFile(filename, func(line string) bool {
 		items := strings.Split(line, ":")
 		if len(items) < 2 {
 			return true
 		}
 
 		if items[0] == "syscr" || items[0] == "syscw" {
-			i, err := strings.ParseInt(items[1], 10, 64)
+			i, err := strconv.ParseInt(items[1], 10, 64)
 			if err != nil {
 				return false
 			}
@@ -231,7 +231,11 @@ func (self *ProcIO) Get(pid int) error {
 				self.Oublock = i
 			}
 		}
-	}); err != nil {
+
+		return true
+	})
+
+	if err != nil {
 		return err
 	}
 
