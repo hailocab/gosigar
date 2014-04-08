@@ -209,6 +209,35 @@ func (self *ProcState) Get(pid int) error {
 	return nil
 }
 
+func (self *ProcIO) Get(pid int) error {
+	filename := procFileName(pid, "io")
+
+	if err := readFile(filename, func(line string) bool {
+		items := strings.Split(line, ":")
+		if len(items) < 2 {
+			return true
+		}
+
+		if items[0] == "syscr" || items[0] == "syscw" {
+			i, err := strings.ParseInt(items[1], 10, 64)
+			if err != nil {
+				return false
+			}
+
+			switch items[0] {
+			case "syscr":
+				self.Inblock = i
+			case "syscw":
+				self.Oublock = i
+			}
+		}
+	}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (self *ProcMem) Get(pid int) error {
 	contents, err := readProcFile(pid, "statm")
 	if err != nil {

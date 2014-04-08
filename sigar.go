@@ -81,6 +81,11 @@ const (
 	RunStateUnknown = '?'
 )
 
+type ProcIO struct {
+	Inblock int64
+	Oublock int64
+}
+
 type ProcState struct {
 	Name      string
 	State     RunState

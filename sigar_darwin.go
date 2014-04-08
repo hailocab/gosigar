@@ -259,6 +259,10 @@ func (self *ProcState) Get(pid int) error {
 	return nil
 }
 
+func (self *ProcIO) Get(pid int) error {
+	return nil
+}
+
 func (self *ProcMem) Get(pid int) error {
 	info := C.struct_proc_taskallinfo{}
 
